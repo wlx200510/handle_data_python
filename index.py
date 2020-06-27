@@ -5,7 +5,7 @@ import sys
 import pandas as pd
 import matplotlib.pyplot as plt
 
-GLO_RATIO = 0.4
+GLO_RATIO = 0.5
 DF_TABLE = []
 fileNameArr = []
 
@@ -64,10 +64,10 @@ if __name__ == '__main__':
     if len(sys.argv) > 1:
         GLO_RATIO = float(sys.argv[1])
     else:
-        GLO_RATIO = 0.4
+        GLO_RATIO = 0.5
 
     if not os.path.exists('plain_data'):
-        print('未找到放数据的文件夹')
+        print('未找到放数据的文件夹: plain_data')
     else:
         fileNameArr = os.listdir('plain_data')
         print(fileNameArr)  # 用于图例
