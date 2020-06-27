@@ -4,6 +4,7 @@ import os
 import sys
 import pandas as pd
 import matplotlib.pyplot as plt
+from matplotlib.pyplot import MultipleLocator
 
 GLO_RATIO = 0.5
 DF_TABLE = []
@@ -47,7 +48,8 @@ def paintRaw(df):
     ax = df.plot(x="V/mL", kind="line")
     ax.legend(loc="upper right")
     ax.set_ylabel("intensity")
-    plt.xlim(5, 20)  # 横轴左右边界
+    ax.xaxis.set_major_locator(MultipleLocator(2))
+    plt.xlim(0, 24)  # 横轴左右边界
     plt.savefig(resultPath("raw_plt.png"), dpi=300, bbox_inches='tight')
 
 
@@ -57,6 +59,8 @@ def paintNorm(df):
     ax = df_norm.plot(x="V/mL", kind="line")
     ax.legend(loc="upper right")
     ax.set_ylabel("percentage(%)")
+    ax.xaxis.set_major_locator(MultipleLocator(2))
+    plt.xlim(0, 24)  # 横轴左右边界
     plt.savefig(resultPath("norm_plt.png"), dpi=300, bbox_inches='tight')
 
 
@@ -70,6 +74,7 @@ if __name__ == '__main__':
         print('未找到放数据的文件夹: plain_data')
     else:
         fileNameArr = os.listdir('plain_data')
+        fileNameArr.remove('.gitkeep')  # 去掉额外文件
         print(fileNameArr)  # 用于图例
         for fileName in fileNameArr:
             dataPath = os.path.abspath('plain_data' + os.sep + fileName)
