@@ -2,6 +2,7 @@
 # coding=utf-8
 import os
 import sys
+import shutil
 import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib.pyplot import MultipleLocator
@@ -64,26 +65,43 @@ def paintNorm(df):
     plt.savefig(resultPath("norm_plt.png"), dpi=300, bbox_inches='tight')
 
 
+def getSourceData(pathName):
+    sourceNameArr = os.listdir(pathName)
+    return [os.path.abspath(pathName + os.sep + dirName) for dirName in sourceNameArr if not dirName.startswith('.')]
+
+
 if __name__ == '__main__':
     if len(sys.argv) > 1:
         GLO_RATIO = float(sys.argv[1])
     else:
         GLO_RATIO = 0.5
 
-    if not os.path.exists('plain_data'):
-        print('未找到放数据的文件夹: plain_data')
-    else:
-        fileNameArr = os.listdir('plain_data')
-        fileNameArr.remove('.gitkeep')  # 去掉额外文件
-        print(fileNameArr)  # 用于图例
-        for fileName in fileNameArr:
-            dataPath = os.path.abspath('plain_data' + os.sep + fileName)
-            fileHandler(dataPath)
+    allDirNames = getSourceData('source')
+    for dirName in allDirNames:
+        DF_TABLE = []
+        if not os.path.exists('plain_data'):
+            print('未找到放数据的文件夹: plain_data')
+        else:
+            shutil.rmtree('plain_data')
+            if (os.path.exists('result')):
+                shutil.rmtree('result')
+            # os.mkdir('plain_data')
+            shutil.copytree(dirName, 'plain_data')
+            fileNameArr = [
+                fileNameStr[0:-4] for fileNameStr in os.listdir('plain_data') if fileNameStr.endswith('.txt')]
+            # fileNameArr.remove('.gitkeep')
+            print(fileNameArr)  # 用于图例
+            for fileName in fileNameArr:
+                dataPath = os.path.abspath(
+                    'plain_data' + os.sep + fileName + '.txt')
+                fileHandler(dataPath)
 
-    fileNameArr.insert(0, 'V/mL')
+            fileNameArr.insert(0, 'V/mL')
 
-    df = pd.DataFrame(DF_TABLE, columns=fileNameArr)
-    df.to_csv(resultPath('pd.xlsx'), sep='\t', index=False, header=True)
-
-    paintRaw(df)
-    paintNorm(df)
+            df = pd.DataFrame(DF_TABLE, columns=fileNameArr)
+            df.to_csv(resultPath('pd.csv'), sep=',',
+                      index=False, header=True)
+            shutil.copy(resultPath('pd.csv'), dirName +
+                        os.sep + 'pd.csv')  # copy到源文件夹中
+            # paintRaw(df)
+            # paintNorm(df)
