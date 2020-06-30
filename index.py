@@ -83,7 +83,7 @@ if __name__ == '__main__':
     fileNameArr.insert(0, 'V/mL')
 
     df = pd.DataFrame(DF_TABLE, columns=fileNameArr)
-    df.to_csv(resultPath('pd.xlsx'), sep='\t', index=False, header=True)
+    df.to_csv(resultPath('pd.csv'), sep=',', index=False, header=True)
 
     paintRaw(df)
     paintNorm(df)
